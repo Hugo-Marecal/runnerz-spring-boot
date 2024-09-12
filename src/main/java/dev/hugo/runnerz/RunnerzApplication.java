@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 
 import dev.hugo.runnerz.run.Location;
 import dev.hugo.runnerz.run.Run;
-import dev.hugo.runnerz.run.RunRepository;
 
 @SpringBootApplication
 public class RunnerzApplication {
