@@ -1,7 +1,5 @@
 package dev.hugo.runnerz;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,11 +8,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.support.RestClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
-import dev.hugo.runnerz.run.Location;
-import dev.hugo.runnerz.run.Run;
 import dev.hugo.runnerz.user.User;
-import dev.hugo.runnerz.user.UserRestClient;
+import dev.hugo.runnerz.user.UserHttpClient;
 
 @SpringBootApplication
 public class RunnerzApplication {
@@ -27,7 +26,14 @@ public class RunnerzApplication {
 	}
 
 	@Bean
-	CommandLineRunner runner(UserRestClient client) {
+	UserHttpClient userHttpClient() {
+		RestClient restClient = RestClient.create("https://jsonplaceholder.typicode.com/");
+		HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClient)).build();
+		return factory.createClient(UserHttpClient.class);
+	}
+
+	@Bean
+	CommandLineRunner runner(UserHttpClient client) {
 		return args -> {
 
 			List<User> users = client.findAll();
